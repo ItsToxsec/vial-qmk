@@ -18,33 +18,56 @@ jobs:
   build:
     name: Keyball61 / ${{ matrix.keymap }}
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/qmk/qmk_cli:latest
 
     strategy:
       fail-fast: false
       matrix:
         keymap:
           - vial
-          # Uncomment any additional variants you want to build:
+          # Uncomment additional variants if desired:
           # - vial_left
           # - vial_right
           # - vial_dual
           # - vial_none
 
     steps:
-      - name: Allow repository in container
-        run: git config --global --add safe.directory '*'
-
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: Show QMK information
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install QMK build dependencies
+        shell: bash
         run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo ./util/qmk_install.sh -y
+
+      - name: Install QMK Python dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install qmk
+
+      - name: Configure QMK to use this repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          qmk setup -H "$GITHUB_WORKSPACE" -y
+
+      - name: Show versions
+        shell: bash
+        run: |
+          python --version
           qmk --version
-          qmk doctor || true
+          git submodule status
 
       - name: Clean previous build output
         run: rm -rf .build
