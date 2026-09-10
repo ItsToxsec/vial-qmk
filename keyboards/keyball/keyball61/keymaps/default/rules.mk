@@ -1,0 +1,7 @@
+RGBLIGHT_ENABLE = yes
+
+MCU = RP2040
+BOOTLOADER = rp2040
+
+OLED_ENABLE = yes
+SRC += sly_oled.c

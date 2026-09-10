@@ -1,0 +1,25 @@
+# Vial / VIA
+VIA_ENABLE = yes
+VIAL_ENABLE = yes
+RAW_ENABLE = yes
+
+# RP2040
+MCU = RP2040
+BOOTLOADER = rp2040
+
+# Keyball
+OLED_ENABLE = yes
+MOUSEKEY_ENABLE = yes
+EXTRAKEY_ENABLE = yes
+
+# Custom OLED
+SRC += sly_oled.c
+
+# Disable unused advanced features
+COMBO_ENABLE = no
+TAP_DANCE_ENABLE = no
+KEY_OVERRIDE_ENABLE = no
+
+VIAL_COMBO_ENABLE = no
+VIAL_TAP_DANCE_ENABLE = no
+VIAL_KEY_OVERRIDE_ENABLE = no
