@@ -1,0 +1,96 @@
+name: Build Keyball61 Vial Firmware
+
+on:
+  push:
+    paths:
+      - "keyball/**"
+      - ".github/workflows/build-keyball.yml"
+  pull_request:
+    paths:
+      - "keyball/**"
+      - ".github/workflows/build-keyball.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Keyball61 / ${{ matrix.keymap }}
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/qmk/qmk_cli:latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        keymap:
+          - vial
+          # Uncomment any additional variants you want GitHub to build:
+          # - vial_left
+          # - vial_right
+          # - vial_dual
+          # - vial_none
+
+    steps:
+      - name: Allow Git repositories in the container
+        run: git config --global --add safe.directory '*'
+
+      - name: Checkout your Keyball files
+        uses: actions/checkout@v4
+        with:
+          path: custom-keyball
+
+      - name: Checkout Vial-QMK
+        uses: actions/checkout@v4
+        with:
+          repository: vial-kb/vial-qmk
+          ref: vial
+          path: vial-qmk
+          submodules: recursive
+
+      - name: Install custom Keyball source into Vial-QMK
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf vial-qmk/keyboards/keyball
+          cp -a custom-keyball/keyball vial-qmk/keyboards/keyball
+
+      - name: Show QMK information
+        working-directory: vial-qmk
+        run: |
+          qmk --version
+          qmk doctor || true
+
+      - name: Build firmware
+        working-directory: vial-qmk
+        shell: bash
+        run: |
+          set -euo pipefail
+          qmk compile -kb keyball/keyball61 -km "${{ matrix.keymap }}"
+
+      - name: Collect firmware
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p firmware
+          find vial-qmk -maxdepth 1 -type f \( \
+            -name '*.uf2' -o \
+            -name '*.hex' -o \
+            -name '*.bin' \
+          \) -print -exec cp -v {} firmware/ \;
+
+          echo "Built files:"
+          ls -lah firmware
+
+          test -n "$(find firmware -maxdepth 1 -type f -print -quit)"
+
+      - name: Upload firmware artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keyball61-${{ matrix.keymap }}-${{ github.sha }}
+          path: firmware/*
+          if-no-files-found: error
+          retention-days: 30
