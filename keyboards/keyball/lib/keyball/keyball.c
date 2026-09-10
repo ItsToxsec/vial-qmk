@@ -775,7 +775,9 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
                 uint16_t v = get_auto_mouse_timeout() - 50;
                 set_auto_mouse_timeout(MAX(v, AML_TIMEOUT_MIN));
             } break;
-            case AML_TIME:
+            #endif
+
+    case AML_TIME:
                 keyball_mouse_timeout_index =
                     (keyball_mouse_timeout_index + 1) % ARRAY_SIZE(keyball_mouse_timeouts);
                 keyball_mouse_last_motion = timer_read32();
@@ -787,7 +789,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
                 }
 #    endif
                 break;
-#endif
+
 
             default:
                 return true;
