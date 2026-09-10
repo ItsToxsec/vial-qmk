@@ -45,7 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DYNAMIC_KEYMAP_MACRO_EEPROM_SIZE 1024
 
 // Unique Vial keyboard ID for this Keyball61 build.
-#define VIAL_KEYBOARD_UID {0x8F, 0x6B, 0x21, 0xCB, 0xA9, 0x6C, 0x92, 0x91}
+#define VIAL_KEYBOARD_UID {0x61, 0x4B, 0xA7, 0xD2, 0x38, 0xC5, 0xEE, 0x10}
 
 // VIAL_INSECURE is enabled in rules.mk so vial.rocks can connect
 // without requiring a physical unlock chord while testing.
