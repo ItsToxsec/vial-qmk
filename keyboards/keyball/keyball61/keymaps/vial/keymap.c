@@ -1,4 +1,5 @@
 #include QMK_KEYBOARD_H
+#include <string.h>
 
 enum layers {
     QWE = 0,
@@ -140,3 +141,53 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         RGB_TOG, KC_NO, KC_NO, KC_NO, KC_NO, KC_LALT, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO
     )
 };
+
+
+#ifdef OLED_ENABLE
+#    include "lib/oledkit/oledkit.h"
+#    include "sly_oled.h"
+
+static void render_layer_name(void) {
+    oled_clear();
+
+    const char *name = "QWE";
+
+    switch (get_highest_layer(layer_state | default_layer_state)) {
+        case QWE:   name = "QWE";   break;
+        case GAL:   name = "GAL";   break;
+        case COL:   name = "COL";   break;
+        case GAM:   name = "GAM";   break;
+        case NUM:   name = "NUM";   break;
+        case FUN:   name = "FUN";   break;
+        case NAV:   name = "NAV";   break;
+        case MED:   name = "MED";   break;
+        case L08:   name = "L08";   break;
+        case L09:   name = "L09";   break;
+        case L10:   name = "L10";   break;
+        case L11:   name = "L11";   break;
+        case L12:   name = "L12";   break;
+        case L13:   name = "L13";   break;
+        case MOUSE: name = "MOUSE"; break;
+    }
+
+    uint8_t len = strlen(name);
+    uint8_t col = 0;
+
+    if (len < 21) {
+        col = (21 - len) / 2;
+    }
+
+    oled_set_cursor(col, 1);
+    oled_write(name, false);
+}
+
+void oledkit_render_info_user(void) {
+    render_layer_name();
+}
+
+void oledkit_render_logo_user(void) {
+    oled_clear();
+    oled_set_cursor(0, 0);
+    render_sly_logo();
+}
+#endif
