@@ -35,11 +35,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define TAP_CODE_DELAY 5
 
-#define AUTO_MOUSE_DEFAULT_LAYER 14
+#define AUTO_MOUSE_DEFAULT_LAYER 15
 
 // Vial dynamic keymap settings
 #undef DYNAMIC_KEYMAP_LAYER_COUNT
-#define DYNAMIC_KEYMAP_LAYER_COUNT 15
+#define DYNAMIC_KEYMAP_LAYER_COUNT 16
 
 #define DYNAMIC_KEYMAP_MACRO_COUNT 32
 #define DYNAMIC_KEYMAP_MACRO_EEPROM_SIZE 1024
